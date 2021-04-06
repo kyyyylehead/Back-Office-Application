@@ -1,0 +1,49 @@
+﻿@layout LoginLayout
+@page "/login"
+@page "/login/{ErrorMessage}"
+@inject NavigationManager NavManager
+@attribute [AllowAnonymous]
+
+
+@if (ErrorMessage != null)
+{
+    <div class="text-danger">@ErrorMessage</div>
+}
+<center>
+    <div class="col-4 card m-auto"> 
+        <div class="col-12 m-auto">
+            <br />
+            <img src="/img/sp_logo.png" width="200px" height="200px" />
+            
+            <form method="post" action="/account/login">
+                <br />
+
+                <div>
+                    <h3 style="font-weight:bold; color:orange">Superior Processing Login</h3>
+                </div>
+                <br />
+
+                <div class="col-4 row">
+                    <input type="text" name="username" class="form-control" placeholder="Username" />
+                </div>
+                <br />
+
+                <div class="col-4 row">
+                    <input type="password" name="password" class="form-control" placeholder="Password" />
+                </div>
+                <br />
+
+                <button class="btn btn-primary m-auto">Login</button>
+                <br /><br />
+            </form>
+        </div>
+    </div>
+</center>
+
+
+
+@code {
+    [Parameter] public string ErrorMessage { get; set; }
+
+
+}

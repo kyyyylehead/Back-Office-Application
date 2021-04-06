@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlzLogin", "BlzLogin\BlzLogin.csproj", "{826F96AB-95DF-4E81-8AE0-0199F967059C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLibrary", "DataAccessLibrary\DataAccessLibrary.csproj", "{9822CA6B-3637-4D0A-BAE0-7293A9AD24BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{826F96AB-95DF-4E81-8AE0-0199F967059C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{826F96AB-95DF-4E81-8AE0-0199F967059C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{826F96AB-95DF-4E81-8AE0-0199F967059C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{826F96AB-95DF-4E81-8AE0-0199F967059C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9822CA6B-3637-4D0A-BAE0-7293A9AD24BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9822CA6B-3637-4D0A-BAE0-7293A9AD24BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9822CA6B-3637-4D0A-BAE0-7293A9AD24BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9822CA6B-3637-4D0A-BAE0-7293A9AD24BF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {663B3B2D-8F51-4191-A8B0-649956007750}
+	EndGlobalSection
+EndGlobal

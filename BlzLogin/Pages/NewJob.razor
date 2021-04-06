@@ -1,0 +1,546 @@
+﻿@page "/jobs/new"
+@using BlzLogin.Models;
+
+@inject BlzLogin.Data.ApplicationDbContext _context
+
+<section id="top"></section>
+<h3>Enter a new job </h3>
+
+@if (displayUserAddedToDB)
+{
+    <br />
+    <div class="row bg-success text-white" style="margin-top:10px; height:40px">
+        <label class="p-2">User added to database... </label>
+    </div>
+    <br />
+}
+
+<EditForm EditContext=@editContext OnValidSubmit=@HandleValidSubmit OnInvalidSubmit="HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+
+    <div>
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Superior Work Order #</p>
+            </div>
+            <div class="col-sm-4">
+                <InputNumber @bind-Value="formModel.SelectedJob.SuperiorWorkOrderNumber" class="form-control mb-2"></InputNumber>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.SuperiorWorkOrderNumber)" />
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Customer Order #</p>
+            </div>
+            <div class="col-sm-4">
+                <InputNumber @bind-Value="formModel.SelectedJob.CustomerOrderNumber" class="form-control mb-2"></InputNumber>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.CustomerOrderNumber)" />
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Customer Name</p>
+            </div>
+            <div class="col-sm-3">
+                <!--
+                <BlazoredTypeahead SearchMethod=SearchNames
+                                   @bind-Value="formModel.SelectedJob"
+                                   AddItemOnEmptyResultMethod=NewName>
+                    <SelectedTemplate Context="job">
+                        @job.Name
+                    </SelectedTemplate>
+                    <ResultTemplate Context="job">
+                        @job.Name
+                    </ResultTemplate>
+                </BlazoredTypeahead>
+                <ValidationMessage For="@(() => formModel.SelectedJob)" />
+                    -->
+                <InputText @bind-Value="formModel.SelectedJob.Name" class="form-control mb-2"></InputText>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.Name)" />
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Quantity / Size</p>
+            </div>
+            <div class="col-sm-2">
+                <InputText @bind-Value="formModel.SelectedJob.Quantity" class="form-control mb-2"></InputText>
+            </div>
+            <div class="col-sm-2">
+                <InputText @bind-Value="formModel.SelectedJob.Size" class="form-control mb-2"></InputText>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Customer Part #</p>
+            </div>
+            <div class="col-sm-4">
+                <InputNumber @bind-Value="formModel.SelectedJob.CustomerPartNumber" class="form-control mb-2"></InputNumber>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.CustomerPartNumber)" />
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>ITAR Required?</p>
+            </div>
+            <div class="col-sm-4">
+                <InputCheckbox @bind-Value="formModel.SelectedJob.ITAR" class="form-control mb-2"></InputCheckbox>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>HOT?</p>
+            </div>
+            <div class="col-sm-4">
+                <InputCheckbox @bind-Value="formModel.SelectedJob.HOT" class="form-control mb-2"></InputCheckbox>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <p>Metal</p>
+                </div>
+                <div class="col-sm-2">
+                    <InputSelect @bind-Value="formModel.SelectedJob.Metal" class="form-control mb-2">
+                    
+                            @foreach (var m in @metals)
+                            {
+                                <option value="@m.Name">@m.Name</option>
+                            }
+                       
+                    </InputSelect>
+        <!--
+                <BlazoredTypeahead SearchMethod=SearchMetals
+                                   @bind-Value="formModel.SelectedJob"
+                                   AddItemOnEmptyResultMethod=NewMetal>
+                    <SelectedTemplate Context="job">
+                        @job.Metal
+                    </SelectedTemplate>
+                    <ResultTemplate Context="job">
+                        @job.Metal
+                    </ResultTemplate>
+                </BlazoredTypeahead>
+         -->
+                </div>
+                <div class="col-sm-1">
+                    <button type=button class="btn-outline-primary" @onclick="@ShowNewMetal">+</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2"> </div>
+                <div class="col-sm-2">
+                    <InputText @bind-Value="formModel.SelectedJob.Metal" placeholder="New Metal" class="form-control mb-2"
+                               hidden="@(!showNewMetal)"></InputText>
+                </div>
+            </div>
+
+            <br />
+        <!--
+        <div class="row">
+            <div class="col-sm-2"> </div>
+            <div class="col-sm-2">
+                <InputText @bind-Value="formModel.SelectedJob.Metal" placeholder="New Metal" class="form-control mb-2"></InputText>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.Metal)" />
+            </div>
+        </div>
+        <br />
+-->
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Thickness</p>
+            </div>
+            <div class="col-sm-2">
+                <InputNumber @bind-Value="formModel.SelectedJob.ThicknessMin" placeholder="Minimum" class="form-control mb-2"></InputNumber>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.ThicknessMin)" />
+            </div>
+            <div class="col-sm-2">
+                <InputNumber @bind-Value="formModel.SelectedJob.ThicknessMax" placeholder="Maximum" class="form-control mb-2"></InputNumber>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.ThicknessMax)" />
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Serial #s</p>
+            </div>
+            <div class="col-sm-4">
+                <InputText @bind-Value="formModel.SelectedJob.SerialNumbers" class="form-control mb-2"></InputText>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Overall Requirements</p>
+            </div>
+            <div class="col-sm-4">
+                <InputTextArea @bind-Value="formModel.SelectedJob.OverallRequirements" class="form-control mb-2"></InputTextArea>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Shipping Instructions</p>
+            </div>
+            <div class="col-sm-2">
+                <InputText @bind-Value="formModel.SelectedJob.ShippingCarrier" placeholder="Carrier" class="form-control mb-2"></InputText>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.ShippingCarrier)" />
+            </div>
+            <div class="col-sm-2">
+                <InputText @bind-Value="formModel.SelectedJob.ShippingSpeed" placeholder="Speed" class="form-control mb-2"></InputText>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.ShippingSpeed)" />
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Job Recieved by</p>
+            </div>
+            <div class="col-sm-4">
+                <InputText @bind-Value="formModel.SelectedJob.JobReciever" class="form-control mb-2"></InputText>
+                <ValidationMessage For="@(()=>formModel.SelectedJob.JobReciever)" />
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <br />
+
+    </div>
+    @if (displayValidationErrorMessages)
+    {
+        <div class="col-md-4" style="margin-top:10px">
+            <label>Validation Messages: </label>
+            <ValidationSummary />
+        </div>
+    }
+
+    <button class="btn btn-primary" type="submit" onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})">Submit</button>
+
+</EditForm>
+<br />
+<!--
+
+<EditForm Model=@formModel OnValidSubmit=@HandleValidSubmit>
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div>
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Superior Work Order #</p>
+            </div>
+            <div class="col-sm-3">
+                <InputNumber @bind-Value="formModel.SelectedJob.SuperiorWorkOrderNumber"></InputNumber>
+            </div>
+            <div class="col-sm-7"></div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Customer Order #</p>
+            </div>
+            <div class="col-sm-3">
+                <InputNumber @bind-Value="formModel.SelectedJob.CustomerOrderNumber"></InputNumber>
+            </div>
+            <div class="col-sm-7"></div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Metal</p>
+            </div>
+            <div class="col-sm-4">
+                <InputSelect name="Metal" id="metal" @bind-Value="formModel.SelectedJob.Metal">
+                    @foreach (var m in @metals)
+                    {
+                        <option value="@m.Name">@m.Name</option>
+                    }
+                </InputSelect>
+
+                <button class="btn btn-primary" @onclick="@Show">+</button>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Name</p>
+            </div>
+            <div class="col-sm-3">
+                <BlazoredTypeahead SearchMethod=SearchNames
+                                   @bind-Value="formModel.SelectedJob"
+                                   AddItemOnEmptyResultMethod=NewName>
+                    <SelectedTemplate Context="job">
+                        @job.Name
+                    </SelectedTemplate>
+                    <ResultTemplate Context="job">
+                        @job.Name
+                    </ResultTemplate>
+                </BlazoredTypeahead>
+            </div>
+            <div class="col-sm-7"></div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-6 m-auto">
+                <button class="btn btn-primary" type="submit">Create</button>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+    </div>
+</EditForm>
+
+    -->
+<!--
+@if (showDialog)
+{
+    <div class="modal fade show d-block" id="MetalModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titleLabel">Add a Metal</h5>
+                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@newMetal" OnValidSubmit="@HandleValidMetal">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="form-group">
+                            <label for="lastName">Name: </label>
+                            <InputText id="name" class="form-control" @bind-Value="@newMetal.Name" placeholder="Enter a name"></InputText>
+                            <ValidationMessage For="@(() => newMetal.Name)" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save employee</button>
+                        <a class="btn btn-outline-primary" @onclick="@Close">Close</a>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+-->
+@code
+{
+    private Job job = new Job();
+    private JobModel jobmodel = new JobModel();
+    private Metal newMetal = new Metal();
+
+    private FormModel formModel = new FormModel();
+    private IEnumerable<Job> jobs;
+    private List<Metal> metals;
+
+    private EditContext editContext;
+
+    private bool showDialog { get; set; } = false;
+    private bool showNewMetal { get; set; } = false;
+    private bool displayValidationErrorMessages = false;
+    private bool displayUserAddedToDB = false;
+
+    DateTime today = DateTime.Now;
+
+    class DisplayJob
+    {
+        public string Name;
+        public DisplayJob(string name)
+        {
+            Name = name;
+        }
+    }
+
+    public class JobModel
+    {
+        public int Id { get; set; }
+        public DateTime Date { get; set; }
+
+        public int SuperiorWorkOrderNumber { get; set; }
+
+        public int CustomerOrderNumber { get; set; }
+
+        public string Metal { get; set; }
+
+        public string Name { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            formModel.SelectedJob = new Job();
+            editContext = new EditContext(formModel);
+            editContext.OnFieldChanged += EditContext_OnFieldChanged;
+
+            //jobs = _context.Jobs.AsEnumerable();
+            //metals = _context.Metals.ToList();
+            UpdateLists();
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+    }
+
+    private void UpdateLists()
+    {
+        jobs = _context.Jobs.AsEnumerable();
+        metals = _context.Metals.ToList();
+    }
+
+    private async void HandleValidSubmit(EditContext context)
+    {
+        try
+        {
+            formModel.SelectedJob.Date = today;
+            newMetal.Name = formModel.SelectedJob.Metal;
+            _context.Jobs.Add(formModel.SelectedJob);
+            _context.Metals.Add(newMetal);
+            await _context.SaveChangesAsync();
+            UpdateLists();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+        formModel.SelectedJob = new Job();
+        displayValidationErrorMessages = false;
+        displayUserAddedToDB = true;
+        StateHasChanged();
+    }
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        displayValidationErrorMessages = true;
+        displayUserAddedToDB = false;
+    }
+
+    private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        if (e.FieldIdentifier.FieldName == "Name" || e.FieldIdentifier.FieldName == "CustomerPartNumber") AutofillMatcher();
+    }
+
+    private void AutofillMatcher()
+    {
+        if(formModel.SelectedJob.Name != null && formModel.SelectedJob.CustomerPartNumber != 0)
+        {
+            foreach(Job j in jobs)
+            {
+                if(formModel.SelectedJob.Name == j.Name && formModel.SelectedJob.CustomerPartNumber == j.CustomerPartNumber)
+                {
+                    formModel.SelectedJob.Quantity = j.Quantity;
+                    formModel.SelectedJob.Size = j.Size;
+                    formModel.SelectedJob.ITAR = j.ITAR;
+                    formModel.SelectedJob.HOT = j.HOT;
+                    formModel.SelectedJob.Metal = j.Metal;
+                    formModel.SelectedJob.ThicknessMin = j.ThicknessMin;
+                    formModel.SelectedJob.ThicknessMax = j.ThicknessMax;
+                    formModel.SelectedJob.SerialNumbers = j.SerialNumbers;
+                    formModel.SelectedJob.OverallRequirements = j.OverallRequirements;
+                    formModel.SelectedJob.ShippingCarrier = j.ShippingCarrier;
+                    formModel.SelectedJob.ShippingSpeed = j.ShippingSpeed;
+                    formModel.SelectedJob.JobReciever = j.JobReciever;
+                    break;
+                }
+            }
+        }
+    }
+
+    private async void HandleValidMetal()
+    {
+        try
+        {
+            _context.Metals.Add(newMetal);
+            // showDialog = false;
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+    }
+
+    private DateTime GetToday()
+    {
+        return DateTime.Today;
+    }
+
+    private void Show()
+    {
+        ResetDialog();
+        showDialog = true;
+        StateHasChanged();
+    }
+
+    private void ShowNewMetal()
+    {
+        showNewMetal = !showNewMetal;
+    }
+
+    private void Close()
+    {
+        showDialog = false;
+        StateHasChanged();
+    }
+
+    private void ResetDialog()
+    {
+        newMetal = new Metal();
+    }
+
+    private async Task<IEnumerable<Job>> SearchNames(string name)
+    {
+        return await Task.FromResult(jobs.Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList());
+    }
+
+    private async Task<IEnumerable<Job>> SearchMetals(string metal)
+    {
+        return await Task.FromResult(jobs.Where(x => x.Metal.ToLower().Contains(metal.ToLower())).ToList());
+    }
+
+    private async Task<Job> NewName(string name)
+    {
+        Job newNameJob = new Job();
+        newNameJob.Name = name;
+        return await Task.FromResult(newNameJob);
+    }
+
+    private async Task<Job> NewMetal(string metal)
+    {
+        Job newMetalJob = new Job();
+        newMetalJob.Metal = metal;
+        return await Task.FromResult(newMetalJob);
+    }
+
+    private async Task<IEnumerable<Job>> SearchPartNumbers(string number)
+    {
+        return await Task.FromResult(jobs.Where(x => x.Name.ToLower().Contains(number.ToLower())).ToList());
+    }
+
+    private Job LoadSelectedName(string name) => jobs.FirstOrDefault(j => j.Name == name);
+}

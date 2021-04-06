@@ -1,0 +1,116 @@
+﻿@page "/jobs"
+@*
+    @using DataAccessLibrary
+    @using DataAccessLibrary.Models
+*@
+@using BlzLogin.Models
+
+@inject BlzLogin.Data.ApplicationDbContext _context
+
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
+
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<h1>Job List</h1>
+
+<h4>Current Jobs</h4>
+@if (jobs is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>View Job</th>
+                <th class="sort-th" @onclick="@(() => SortTable("SuperiorWorkOrderNumber"))">Superior Work Order Number<span class="fa @(SetSortIcon("SuperiorWorkOrderNumber"))"></span></th>
+                <th class="sort-th" @onclick="@(() => SortTable("CustomerOrderNumber"))">Customer Order Number<span class="fa @(SetSortIcon("CustomerOrderNumber"))"></span></th>
+                <th>Customer Name</th>
+                <th class="sort-th" @onclick="@(() => SortTable("Date"))">Date Created<span class="fa @(SetSortIcon("Date"))"></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var job in jobs)
+            {
+                <tr>
+                    <td><a href="@($"jobs/{@job.SuperiorWorkOrderNumber}")" class="btn btn-primary">View</a></td>
+                    <td>@job.SuperiorWorkOrderNumber</td>
+                    <td>@job.CustomerOrderNumber</td>
+                    <td>@job.Name</td>
+                    <td>@job.Date</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<style>
+    .sort-th {
+        cursor: pointer;
+    }
+
+    .fa {
+        float: right;
+    }
+</style>
+
+@code {
+    private Job newjob = new Job();
+    private IEnumerable<Job> jobs;
+
+    DateTime today = DateTime.Today;
+
+    private bool isSortedAscending;
+    private string activeSortColumn;
+    public NavigationManager NavigationManager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        jobs = _context.Jobs.AsEnumerable();
+        await _context.SaveChangesAsync();
+    }
+
+    public void NavigateToJob(int SuperiorWorkOrderNumber)
+    {
+        NavigationManager.NavigateTo($"/jobs/{SuperiorWorkOrderNumber}");
+    }
+
+    private void SortTable(string columnName)
+    {
+        if (columnName != activeSortColumn)
+        {
+            jobs = jobs.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            isSortedAscending = true;
+            activeSortColumn = columnName;
+        }
+        else
+        {
+            if (isSortedAscending)
+            {
+                jobs = jobs.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            }
+            else
+            {
+                jobs = jobs.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            }
+            isSortedAscending = !isSortedAscending;
+        }
+    }
+
+    private string SetSortIcon(string columnName)
+    {
+        if (activeSortColumn != columnName)
+        {
+            return string.Empty;
+        }
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
+        }
+    }
+}

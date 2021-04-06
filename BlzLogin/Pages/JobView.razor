@@ -1,0 +1,61 @@
+﻿@page "/jobs/{SuperiorWorkOrderNumber:int}"
+
+@using BlzLogin.Models;
+
+@inject BlzLogin.Data.ApplicationDbContext _context
+
+<h3>JobView</h3>
+
+@if (job is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ol class="jobItems">
+        <li class="jobItem">
+            <div class="item__group">
+                <h2>Superior Order Number</h2>
+                <div class="item__data">@job.SuperiorWorkOrderNumber</div>
+            </div>
+            <div class="item__group">
+                <h2>Customer Order Number</h2>
+                <div class="item__data">@job.CustomerOrderNumber</div>
+            </div>
+            <div class="item__group">
+                <h2>Metal</h2>
+                <div class="item__data">@job.Metal</div>
+            </div>
+            <div class="item__group">
+                <h2>Customer Name</h2>
+                <div class="item__data">@job.Name</div>
+            </div>
+            <div class="item__group">
+                <h2>Date Started</h2>
+                <div class="item__data">@job.Date</div>
+            </div>
+        </li>
+    </ol>
+}
+
+@code {
+
+    private Job job = new Job();
+
+    [Parameter]
+    public int SuperiorWorkOrderNumber { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            job = _context.Jobs.FirstOrDefault(j => j.SuperiorWorkOrderNumber == SuperiorWorkOrderNumber);
+            //Console.WriteLine("customer name: " + job.Name + "check");
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+    }
+}

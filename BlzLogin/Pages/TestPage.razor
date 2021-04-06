@@ -1,0 +1,208 @@
+﻿@page "/TestTypeAhead"
+
+@using BlzLogin.Models;
+@using System.Reflection;
+
+@inject BlzLogin.Data.ApplicationDbContext _context
+
+<h3>Enter a new job</h3>
+
+<EditForm Model=@formModel OnValidSubmit=@HandleValidSubmit>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Superior Work Order #</p>
+            </div>
+            <div class="col-sm-3">
+                <InputNumber @bind-Value="formModel.SelectedJob.SuperiorWorkOrderNumber" class="form-control mb-2"></InputNumber>
+            </div>
+            <div class="col-sm-7"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Customer Order #</p>
+            </div>
+            <div class="col-sm-3">
+                <InputNumber @bind-Value="formModel.SelectedJob.CustomerOrderNumber" class="form-control mb-2"></InputNumber>
+            </div>
+            <div class="col-sm-7"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Metal</p>
+            </div>
+            <div class="col-sm-2">
+                <InputSelect name="Metal" id="metal" @bind-Value="formModel.SelectedJob.Metal" class="form-control mb-2">
+                    @foreach (var m in @metals)
+                    {
+                        <option value="@m.Name">@m.Name</option>
+                    }
+                </InputSelect>
+                    
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-primary" @onclick="@Show">+</button>
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Customer Name</p>
+            </div>
+            <div class="col-sm-3">
+                <BlazoredTypeahead SearchMethod=SearchNames
+                                   AddItemOnEmptyResultMethod=NewName
+                                   @bind-Value="formModel.SelectedJob">
+                    <SelectedTemplate Context="job">
+                        @job.Name
+                    </SelectedTemplate>
+                    <ResultTemplate Context="job">
+                        @job.Name
+                    </ResultTemplate>
+                    <NotFoundTemplate Context="job">
+                        New Value
+                    </NotFoundTemplate>
+                </BlazoredTypeahead>
+                <ValidationMessage For="@(() => formModel.SelectedJob)" />
+            </div>
+        </div>
+        <br />
+
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</EditForm>
+
+@code {
+    private Job job = new Job();
+    private Metal newMetal = new Metal();
+    private FormModel formModel = new FormModel();
+    private IEnumerable<Job> jobs;
+    private List<Metal> metals;
+
+    private bool showDialog { get; set; }
+    DateTime today = DateTime.Now;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            formModel.SelectedJob = new Job();
+            jobs = _context.Jobs.AsEnumerable();
+            metals = _context.Metals.ToList();
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+    }
+
+    private async void HandleValidSubmit()
+    {
+        try
+        {
+            formModel.SelectedJob.Date = today;
+            if (FormReadyCheck())
+            {
+                _context.Jobs.Add(formModel.SelectedJob);
+                await _context.SaveChangesAsync();
+            }
+
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+        job = new Job();
+        formModel = new FormModel();
+        base.StateHasChanged();
+    }
+
+    private bool FormReadyCheck()
+    {
+        PropertyInfo[] props = formModel.SelectedJob.GetType().GetProperties();
+        foreach(var p in props)
+        {
+            if (p.GetValue(formModel.SelectedJob) == null) return false;
+        }
+        return true;
+    }
+
+    private async void HandleValidMetal()
+    {
+        try
+        {
+            _context.Metals.Add(newMetal);
+            showDialog = false;
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+    }
+
+    private DateTime GetToday()
+    {
+        return DateTime.Today;
+    }
+
+    private void Show()
+    {
+        ResetDialog();
+        showDialog = true;
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        showDialog = false;
+        StateHasChanged();
+    }
+
+    private void ResetDialog()
+    {
+        newMetal = new Metal();
+    }
+
+    private async Task<IEnumerable<Job>> SearchNames(string name)
+    {
+        return await Task.FromResult(jobs.Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList());
+    }
+
+    private async Task<IEnumerable<Job>> SearchMetals(string metal)
+    {
+        return await Task.FromResult(jobs.Where(x => x.Metal.ToLower().Contains(metal.ToLower())).ToList());
+    }
+
+    private async Task<Job> NewName(string name)
+    {
+        Job newNameJob = formModel.SelectedJob;
+        newNameJob.Name = name;
+        return await Task.FromResult(newNameJob);
+    }
+
+    private async Task<Job> NewMetal(string metal)
+    {
+        Job newMetalJob = new Job();
+        newMetalJob.Metal = metal;
+        return await Task.FromResult(newMetalJob);
+    }
+
+    private async Task<IEnumerable<Job>> SearchPartNumbers(string number)
+    {
+        return await Task.FromResult(jobs.Where(x => x.Name.ToLower().Contains(number.ToLower())).ToList());
+    }
+
+    private Job LoadSelectedName(string name) => jobs.FirstOrDefault(j => j.Name == name);
+}
+

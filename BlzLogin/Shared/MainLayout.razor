@@ -1,0 +1,28 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <img src="/img/SP_logo_resize.png" height=90%/>
+            <AuthorizeView>
+                <Authorized>
+                    <span class="ml-md-auto">
+                        Connected user: @context.User.Identity.Name
+                        <a href="/account/logout">Logout</a>
+                    </span>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="login" class="ml-md-auto">Login</a>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+﻿.jobItems {
+    padding: 0;
+    list-style: none;
+}
+
+.jobItem:nth-child(odd) {
+    background-color: #EEE;
+}
+
+.jobItem:nth-child(even) {
+    background-color: #DDD;
+}
+
+.jobItem {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-column-gap: 1px;
+    grid-row-gap: 5px;
+}
+
+    .jobItem .double {
+        grid-column: span 2;
+    }
+
+.item__group h2 {
+    font-size: 1em;
+    margin: 0;
+}
