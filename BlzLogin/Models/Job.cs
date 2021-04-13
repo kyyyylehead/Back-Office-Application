@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BlzLogin.Report;
+using Microsoft.JSInterop;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
@@ -40,9 +42,11 @@ namespace BlzLogin.Models
         public string Metal { get; set; }
 
         [Required(ErrorMessage = "Must specify the minimum thickness")]
+        [Range(.00000001, 10000000, ErrorMessage = "Minimum Thickness is required")]
         public double ThicknessMin { get; set; }
 
         [Required(ErrorMessage = "Must specify the maximum thickness")]
+        [Range(.00000001, 10000000, ErrorMessage = "Maximum Thickness is required")]
         public double ThicknessMax { get; set; }
 
         public string SerialNumbers { get; set; } = null;
@@ -60,5 +64,16 @@ namespace BlzLogin.Models
         [Required(ErrorMessage = "Job Reciever is required")]
         [DataType(DataType.Text)]
         public string JobReciever { get; set; }
+
+        public void GeneratePDF(IJSRuntime js, Job job)
+        {
+            RptJob jobreport = new RptJob();
+            js.InvokeAsync<Job>(
+                "saveAsFile",
+                "OrderList.pdf",
+                Convert.ToBase64String(jobreport.Report(job))
+
+            );
+        }
     }
 }

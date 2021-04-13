@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Blazored.Typeahead" Version="4.6.0" />
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.7.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />

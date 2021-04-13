@@ -1,14 +1,12 @@
 ﻿@page "/"
-@using BlzLogin.Data
 @using BlzLogin.Components
-@inject IJSRuntime js
+
 
 <AuthorizeView>
     <Authorized Context="AuthenticationState">
-        <h1>asdfghjkl</h1>
+        <h1>If you're authorized you can see this</h1>
         <h2>Welcome to the app</h2>
 
-        <button @onclick="GeneratePDFFile">Generate Test PDF</button>
 
 
     </Authorized>
@@ -19,9 +17,5 @@
 
 
 @code{
-    private void GeneratePDFFile()
-    {
-        Order order = new Order();
-        order.GeneratePDF(js);
-    }
+
 }

@@ -3,6 +3,7 @@
 @using BlzLogin.Models;
 
 @inject BlzLogin.Data.ApplicationDbContext _context
+@inject IJSRuntime js
 
 <h3>JobView</h3>
 
@@ -12,45 +13,201 @@
 }
 else
 {
-    <ol class="jobItems">
-        <li class="jobItem">
-            <div class="item__group">
-                <h2>Superior Order Number</h2>
-                <div class="item__data">@job.SuperiorWorkOrderNumber</div>
+    <div class="container">
+        <EditForm EditContext="editContext" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-12">
+                            <label for="SuperiorWorkOrderNumber">Superior Work Order Number</label>
+                            <InputNumber @bind-Value="job.SuperiorWorkOrderNumber" class="form-control mb-2" id="SuperiorWorkOrderNumber"
+                                         disabled="@(!EditMode)" placeholder="enter #"></InputNumber>
+                            <ValidationMessage For="@(()=>job.SuperiorWorkOrderNumber)" />
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-12">
+                            <label for="CustomerOrderNumber">Customer Order Number</label>
+                            <InputNumber @bind-Value="job.CustomerOrderNumber" class="form-control mb-2" id="CustomerOrderNumber"
+                                         disabled="@(!EditMode)" placeholder="enter #"></InputNumber>
+                            <ValidationMessage For="@(()=>job.CustomerOrderNumber)" />
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-12">
+                            <label for="Name">Customer Name</label>
+                            <InputText @bind-Value="job.Name" class="form-control mb-2" id="Name"
+                                       disabled="@(!EditMode)" placeholder="enter name"></InputText>
+                            <ValidationMessage For="@(()=>job.Name)" />
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-12">
+                            <label for="CustomerPartNumber">Customer Part Number</label>
+                            <InputNumber @bind-Value="job.CustomerPartNumber" class="form-control mb-2" id="CustomerpartNumber"
+                                         disabled="@(!EditMode)" placeholder="enter #"></InputNumber>
+                            <ValidationMessage For="@(()=>job.CustomerPartNumber)" />
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-6">
+                            <label for="Quantity">Quantity</label>
+                            <InputText @bind-Value="job.Quantity" class="form-control mb-2" id="Quantity"
+                                       disabled="@(!EditMode)" placeholder="(optional) enter #"></InputText>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="Size">Size</label>
+                            <InputText @bind-Value="job.Size" class="form-control mb-2" id="Size"
+                                       disabled="@(!EditMode)" placeholder="(optional) enter text"></InputText>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-6">
+                            <label for="ITAR">ITAR</label>
+                            <InputCheckbox @bind-Value="job.ITAR" class="form-control mb-2" disabled="@(!EditMode)"></InputCheckbox>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="HOT">HOT</label>
+                            <InputCheckbox @bind-Value="job.HOT" class="form-control mb-2" disabled="@(!EditMode)"></InputCheckbox>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-6">
+                            <label for="Metal">Metal</label>
+                            <InputSelect @bind-Value="@job.Metal" class="form-control" id="Metal" disabled="@(!EditMode)">
+                                @foreach (Metal m in @metals)
+                                    {
+                                    <option value="@m.Name">@m.Name</option>
+                                    }
+                            </InputSelect>
+
+                            <ValidationMessage For="@(()=>job.Metal)" />
+                        </div>
+
+                        <div>
+                            <button type=button class="btn-outline-primary" id="Metal" disabled="@(!EditMode)" @onclick="@ShowNewMetal">+</button>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-6">
+                            <InputText @bind-Value="job.Metal" class="form-control mb-2" id="NewMetal" hidden="@(!showNewMetal)" placeholder="New Metal"></InputText>
+                            <ValidationMessage For="@(()=>job.Metal)" />
+                        </div>
+                    </div>
+
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-6">
+                            <label for="Minimum">Thickness (Min)</label>
+                            <InputNumber @bind-Value="job.ThicknessMin" class="form-control mb-2" id="Minimum"
+                                         disabled="@(!EditMode)" placeholder="enter #"></InputNumber>
+                            <ValidationMessage For="@(()=>job.ThicknessMin)" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="Maximum">Thickness (Max)</label>
+                            <InputNumber @bind-Value="job.ThicknessMax" class="form-control mb-2" id="Maximum"
+                                         disabled="@(!EditMode)" placeholder="enter #"></InputNumber>
+                            <ValidationMessage For="@(()=>job.ThicknessMax)" />
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-12">
+                            <label for="SerialNumbers">Serial Numbers</label>
+                            <InputText @bind-Value="job.SerialNumbers" class="form-control mb-2" id="SerialNumbers"
+                                       disabled="@(!EditMode)" placeholder="(optional) enter text"></InputText>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-12">
+                            <label for="Requirements">Overall Requirements</label>
+                            <InputTextArea @bind-Value="job.OverallRequirements" class="form-control mb-2" id="Requirements"
+                                           disabled="@(!EditMode)" placeholder="(optional) enter text"></InputTextArea>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-6">
+                            <label for="Carrier">Shipping Carrier</label>
+                            <InputText @bind-Value="job.ShippingCarrier" class="form-control mb-2" id="Carrier"
+                                       disabled="@(!EditMode)" placeholder="enter text"></InputText>
+                            <ValidationMessage For="@(()=>job.ShippingCarrier)" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="Speed">Shipping Speed</label>
+                            <InputText @bind-Value="job.ShippingSpeed" class="form-control mb-2" id="Speed"
+                                       disabled="@(!EditMode)" placeholder="enter text"></InputText>
+                            <ValidationMessage For="@(()=>job.ShippingSpeed)" />
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-12">
+                            <label for="Reciever">Job Recieved By</label>
+                            <InputText @bind-Value="job.JobReciever" class="form-control mb-2" id="Reciever"
+                                       disabled="@(!EditMode)" placeholder="enter text"></InputText>
+                            <ValidationMessage For="@(()=>job.JobReciever)" />
+                        </div>
+                    </div>
+
+                    <div hidden="@EditMode">
+                        <button type="button" class="btn btn-info" Style="margin-top:10px" @onclick="@StartEdit">Edit Job</button>
+                        <button type="button" class="btn btn-info" Style="margin-top:10px" @onclick="@GeneratePDF">View PDF</button>
+                    </div>
+                    <div hidden="@(!EditMode)">
+                        <button type="submit" class="btn btn-info" Style="margin-top:10px">Update Job</button>
+                        <button type="button" class="btn btn-danger" Style="margin-top:10px" @onclick="@CancelEdit">Cancel</button>
+                    </div>
+                </div>
+                @if (displayValidationErrorMessages)
+                {
+                    <div class="col-md-4" style="margin-top:10px">
+                        <label>Validation Messages: </label>
+                        <ValidationSummary />
+                    </div>
+                }
             </div>
-            <div class="item__group">
-                <h2>Customer Order Number</h2>
-                <div class="item__data">@job.CustomerOrderNumber</div>
-            </div>
-            <div class="item__group">
-                <h2>Metal</h2>
-                <div class="item__data">@job.Metal</div>
-            </div>
-            <div class="item__group">
-                <h2>Customer Name</h2>
-                <div class="item__data">@job.Name</div>
-            </div>
-            <div class="item__group">
-                <h2>Date Started</h2>
-                <div class="item__data">@job.Date</div>
-            </div>
-        </li>
-    </ol>
+        </EditForm>
+    </div>
+    @if (displayJobUpdated)
+    {
+        <div class="row bg-success text-white" style="margin-top:10px; height:40px">
+            <label class="p-2">Job Updated... </label>
+        </div>
+    }
 }
 
 @code {
-
-    private Job job = new Job();
-
     [Parameter]
     public int SuperiorWorkOrderNumber { get; set; }
+
+    private Job job = new Job();
+    private Job backup = new Job();
+    private List<Metal> metals;
+    private EditContext editContext;
+
+    private bool displayValidationErrorMessages = false;
+    private bool displayJobUpdated = false;
+    private bool EditMode = false;
+    private bool showNewMetal { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             job = _context.Jobs.FirstOrDefault(j => j.SuperiorWorkOrderNumber == SuperiorWorkOrderNumber);
-            //Console.WriteLine("customer name: " + job.Name + "check");
+            metals = _context.Metals.ToList();
+            editContext = new EditContext(job);
+            //editContext.OnFieldChanged += EditContext_OnFieldChanged;
             await _context.SaveChangesAsync();
         }
         catch
@@ -58,4 +215,73 @@ else
             base.StateHasChanged();
         }
     }
+
+    private async void HandleValidSubmit(EditContext context)
+    {
+        try
+        {
+            _context.Jobs.Update(job);
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+        displayValidationErrorMessages = false;
+        displayJobUpdated = true;
+        StartEdit();
+        StateHasChanged();
+    }
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        displayValidationErrorMessages = true;
+        displayJobUpdated = false;
+    }
+
+    private void ShowNewMetal()
+    {
+        showNewMetal = !showNewMetal;
+    }
+
+    private void ToggleEdit()
+    {
+        EditMode = !EditMode;
+    }
+
+    private void StartEdit()
+    {
+        CopyJob(job, backup);
+        ToggleEdit();
+    }
+
+    private void CancelEdit()
+    {
+        CopyJob(backup, job);
+        ToggleEdit();
+    }
+
+    private static void CopyJob<Job>(Job copyFrom, Job copyTo)
+    {
+        if (copyFrom == null || copyTo == null)
+            throw new Exception("Must not specify null parameters");
+
+        var properties = copyFrom.GetType().GetProperties();
+
+        foreach (var p in properties.Where(prop => prop.CanRead && prop.CanWrite))
+        {
+            object copyValue = p.GetValue(copyFrom);
+            p.SetValue(copyTo, copyValue);
+        }
+    }
+
+    private void GeneratePDF()
+    {
+        job.GeneratePDF(js, job);
+    }
+
+    //   private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    //   {
+    //      if (e.FieldIdentifier.FieldName == "Name" || e.FieldIdentifier.FieldName == "CustomerPartNumber") AutofillMatcher();
+    //   }
 }
