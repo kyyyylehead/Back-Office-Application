@@ -27,8 +27,4 @@
     <None Include="wwwroot\img\sp_logo.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
-  </ItemGroup>
-
 </Project>

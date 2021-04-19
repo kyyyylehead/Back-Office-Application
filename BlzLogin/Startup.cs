@@ -1,5 +1,4 @@
 using BlzLogin.Data;
-using DataAccessLibrary;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,9 +28,6 @@ namespace BlzLogin
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-
-            services.AddTransient<ISQLDataAccess, SQLDataAccess>();
-            services.AddTransient<IJobData, JobData>();
 
             services.AddControllers();  
             services                    

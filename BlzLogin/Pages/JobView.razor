@@ -68,12 +68,13 @@ else
                     </div>
 
                     <div class="row" style="margin-top:10px">
-                        <div class="col-md-6">
-                            <label for="ITAR">ITAR</label>
+                        <div class="col-md-2" style="margin-top:5px"><label for="ITAR">ITAR</label></div>
+                        <div class="col-md-1">
                             <InputCheckbox @bind-Value="job.ITAR" class="form-control mb-2" disabled="@(!EditMode)"></InputCheckbox>
                         </div>
-                        <div class="col-md-6">
-                            <label for="HOT">HOT</label>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-2" style="margin-top:5px"><label for="HOT">HOT</label></div>
+                        <div class="col-md-1">
                             <InputCheckbox @bind-Value="job.HOT" class="form-control mb-2" disabled="@(!EditMode)"></InputCheckbox>
                         </div>
                     </div>
@@ -90,13 +91,10 @@ else
 
                             <ValidationMessage For="@(()=>job.Metal)" />
                         </div>
-
-                        <div>
-                            <button type=button class="btn-outline-primary" id="Metal" disabled="@(!EditMode)" @onclick="@ShowNewMetal">+</button>
-                        </div>
+                        <button type=button class="btn btn-outline-primary" id="Metal" disabled="@(!EditMode)" @onclick="@ShowNewMetal" style="margin-top:30px">+</button>
                     </div>
 
-                    <div class="row" style="margin-top:10px">
+                    <div class="row" style="margin-top:5px">
                         <div class="col-md-6">
                             <InputText @bind-Value="job.Metal" class="form-control mb-2" id="NewMetal" hidden="@(!showNewMetal)" placeholder="New Metal"></InputText>
                             <ValidationMessage For="@(()=>job.Metal)" />

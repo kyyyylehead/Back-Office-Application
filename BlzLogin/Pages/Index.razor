@@ -1,11 +1,42 @@
 ﻿@page "/"
-@using BlzLogin.Components
+@using BlzLogin.Components;
 
 
 <AuthorizeView>
     <Authorized Context="AuthenticationState">
-        <h1>If you're authorized you can see this</h1>
-        <h2>Welcome to the app</h2>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <!-- <button class="btn mag-btn" style="width:250px; height:250px">test</button>-->
+                    <a href="@($"jobs/new")" class="btn add-btn" style="width:250px; height:250px"></a>
+                </div>
+                <div class="col-md-3">
+                    <a href="@($"jobs/")" class="btn edit-btn" style="width:250px; height:250px"></a>
+                </div>
+                <div class="col-md-3">
+                    <a href="@($"jobs/list")" class="btn list-btn" style="width:250px; height:250px"></a>
+                </div>
+                <div class="col-md-3">
+                    <a href="@($"jobs/")" class="btn mag-btn" style="width:250px; height:250px"></a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3" style="margin-top: 10px; text-align:center">
+                    <!-- <button class="btn mag-btn" style="width:250px; height:250px">test</button>-->
+                    Add a new job
+                </div>
+                <div class="col-md-3" style="margin-top:10px; text-align:center">
+                    Edit a job
+                </div>
+                <div class="col-md-3" style="margin-top:10px; text-align:center">
+                    View job list
+                </div>
+                <div class="col-md-3" style="margin-top:10px; text-align:center">
+                    Search for a job
+                </div>
+            </div>
+        </div>
 
 
 
@@ -15,7 +46,24 @@
     </NotAuthorized>
 </AuthorizeView>
 
+<style>
+    .mag-btn {
+        background-color: transparent;
+        background-image: url('/img/magnifying-glass.png');
+    }
 
-@code{
+    .edit-btn {
+        background-color: transparent;
+        background-image: url('/img/pencil.png');
+    }
 
-}
+    .list-btn {
+        background-color: transparent;
+        background-image: url('/img/spreadsheet.png');
+    }
+
+    .add-btn {
+        background-color: transparent;
+        background-image: url('/img/add.png');
+    }
+</style>

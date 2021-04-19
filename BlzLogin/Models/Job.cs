@@ -70,7 +70,7 @@ namespace BlzLogin.Models
             RptJob jobreport = new RptJob();
             js.InvokeAsync<Job>(
                 "saveAsFile",
-                "OrderList.pdf",
+                "Job-" + job.SuperiorWorkOrderNumber +".pdf",
                 Convert.ToBase64String(jobreport.Report(job))
 
             );
